@@ -1,19 +1,23 @@
 <html>
 	<head><title>Test</title></head>
         <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+        <link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
 <!--         <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
         <script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
         <script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
         <script language="javascript" type="text/javascript">
 			function test_code() {
         		code = editAreaLoader.getValue('code');
+        		input = $('#input').val();
         		$.ajax({
         		  type: 'POST',
 				  url: "/handlers/testcode",
 				  context: document.body,
-				  data: { 'code': code },
+				  data: { 'code': code,
+				  		  'input': input },
 				  success: function(output) {
-				    $('#output').val(output)
+				    $('#output').val(output);
+				    $("ul.css-tabs > li > a").first().click();
 				  }
 				});
         	}
@@ -27,8 +31,13 @@
 		       		,plugins: "testcode"
 		       		,allow_toggle: false
 		        });
-		        
-		        $("ul.tabs").tabs("div.panes > div");
+		        $(".css-tabs").tabs(".css-panes > div");
+		        $('#input').keypress(function(event) { 
+		        	if (event.which == 13 && event.shiftKey) {
+		        		test_code();
+		        		return false;
+		        	} 
+		        });
 		 	 });
         </script>
 	<body>
@@ -52,11 +61,11 @@
 						<tr>
 						<td width="50%" >{{form.code(disabled="disabled")}}</td>
 						<td valign="top">
-							<ul class="tabs">
+							<ul class="css-tabs">
 								<li><a href="#">Output</a></li>
 								<li><a href="#">Input</a></li>
 							</ul>
-							<div class="panes">
+							<div class="css-panes">
 								<div><textarea id="output" readonly="readonly" >{{ output }}</textarea></div>
 								<div><textarea id="input" ></textarea></div>
 								<div>pane 3 content</div>

@@ -9,8 +9,9 @@ from cStringIO import StringIO
 import sys
 import traceback
 
-def to_module(code):
+def to_module(code, test_data=''):
     module = new.module('usercode')
+    module.__dict__['test_input'] = test_data
     exec code in module.__dict__
     return module
 
@@ -18,11 +19,12 @@ class CodeTester(webapp2.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'text/html'
         code = self.request.get('code')
+        test_data = self.request.get('input')
         
         old_stdout = sys.stdout
         sys.stdout = out = StringIO()
         try:
-            usercode = to_module(code)
+            usercode = to_module(code, test_data)
             if hasattr(usercode, 'test'):
                 usercode.test()
         except:
