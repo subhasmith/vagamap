@@ -8,6 +8,10 @@ var EditArea_testcode = {
 			window.top.test_code();
 			return false;
 		}
+		if (e.ctrlKey && e.keyCode == 83) {
+			window.top.save();
+			return false;
+		}
 	}};
 
 // Adds the plugin class to the list of available EditArea plugins

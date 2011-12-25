@@ -8,7 +8,7 @@
         <script language="javascript" type="text/javascript">
 			function test_code() {
         		code = editAreaLoader.getValue('code');
-        		input = $('#input').val();
+        		input = $('#test_input').val();
         		$.ajax({
         		  type: 'POST',
 				  url: "/handlers/testcode",
@@ -21,6 +21,10 @@
 				  }
 				});
         	}
+        	
+        	function save() {
+        		$("input[value='Save']").click();
+        	}
         
         	$(document).ready(function(){
         		$('#code').disabled = true;
@@ -32,7 +36,7 @@
 		       		,allow_toggle: false
 		        });
 		        $(".css-tabs").tabs(".css-panes > div");
-		        $('#input').keypress(function(event) { 
+		        $('#test_input').keypress(function(event) { 
 		        	if (event.which == 13 && event.shiftKey) {
 		        		test_code();
 		        		return false;
@@ -49,25 +53,35 @@
 		</div>
 		<div id="navigation">
 			<ul>
-				<li><a href="#">Providers</a></li>
+				<li><a href="/provider/edit">Providers</a></li>
 				<li><a href="#">Places</a></li>
 				<li><a href="#">Map</a></li>
 			</ul>
 		</div>
 		<div id="content-container">
-			<form method="POST" action="/">
+			<form method="POST" action="" name="provider">
+				<div id="properties">
+					<div class="property">{{form.name.label}} {{form.name}}</div>
+				</div>
+				{% if form.name.errors %}
+        			<ul class="errors">
+        			{% for error in form.name.errors %}
+        				<li>{{ error }}</li>
+        			{% endfor %}
+        			</ul>
+    			{% endif %}
 				<table border="0" class="maintable" cellpadding="3px" cellspacing="3px">
 					<tbody>
 						<tr>
-						<td width="50%" >{{form.code(disabled="disabled")}}</td>
+						<td width="50%" >{{form.code()}}</td>
 						<td valign="top">
 							<ul class="css-tabs">
 								<li><a href="#">Output</a></li>
 								<li><a href="#">Input</a></li>
 							</ul>
 							<div class="css-panes">
-								<div><textarea id="output" readonly="readonly" >{{ output }}</textarea></div>
-								<div><textarea id="input" ></textarea></div>
+								<div><textarea id="output" readonly="readonly" ></textarea></div>
+								<div>{{form.test_input}}</textarea></div>
 								<div>pane 3 content</div>
 							</div>
 							
@@ -75,7 +89,8 @@
 						</tr>
 				</table>
 				<div id="footer">
-					<input type="button" onclick="test_code()" value="Test" /> Save Revert
+					<input type="submit" value="Save" /> 
+					<input type="button" onclick="test_code()" value="Test" />
 				</div>
 			</form>
 		</div>
