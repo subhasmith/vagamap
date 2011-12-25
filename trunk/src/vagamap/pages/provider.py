@@ -1,11 +1,11 @@
 import webapp2
 import wtforms
 import jinja2
-import os
 import new
+import base
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    loader=jinja2.FileSystemLoader(base.folder))
 
 def execute(code):
     module = new.module('usercode')
@@ -23,8 +23,8 @@ class TestPage(webapp2.RequestHandler):
         output = ''
         if self.request.method == 'POST' and form.validate():
             try:
-                 usercode = execute(form.code.data)
-                 output = usercode.test()
+                usercode = execute(form.code.data)
+                output = usercode.test()
             except Exception as e:
                 output = str(e)
             
@@ -41,4 +41,4 @@ class TestPage(webapp2.RequestHandler):
         self.get()
 
 
-app = webapp2.WSGIApplication([('/', TestPage)], debug=True)
+editor = webapp2.WSGIApplication([('/provider/edit', TestPage)], debug=True)

@@ -11,8 +11,12 @@ handlers:
 - url: /scripts
   static_dir: scripts
 
-- url: /.*
-  script: helloworld.app
+- url: /provider/edit
+  script: vagamap.pages.provider.editor
+  
+- url: /handlers/testcode
+  script: vagamap.handlers.testcode.handler
+
 
 libraries:
 - name: jinja2
