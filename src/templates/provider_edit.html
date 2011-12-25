@@ -1,0 +1,99 @@
+<html>
+	<head><title>Test</title></head>
+        <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+        <link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
+        <script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
+        <script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
+        <script language="javascript" type="text/javascript">
+			function test_code() {
+        		code = editAreaLoader.getValue('code');
+        		input = $('#test_input').val();
+        		$.ajax({
+        		  type: 'POST',
+				  url: "/handlers/testcode",
+				  context: document.body,
+				  data: { 'code': code,
+				  		  'input': input },
+				  success: function(output) {
+				    $('#output').val(output);
+				    $("ul.css-tabs > li > a").first().click();
+				  }
+				});
+        	}
+        	
+        	function save() {
+        		$("input[value='Save']").click();
+        	}
+        
+        	$(document).ready(function(){
+        		$('#code').disabled = true;
+		        editAreaLoader.init({
+		            id : "code"		// textarea id
+		            ,syntax: "python"			// syntax to be uses for highgliting
+		            ,start_highlight: true		// to display with highlight mode on start-up
+		       		,plugins: "testcode"
+		       		,allow_toggle: false
+		        });
+		        $(".css-tabs").tabs(".css-panes > div");
+		        $('#test_input').keypress(function(event) { 
+		        	if (event.which == 13 && event.shiftKey) {
+		        		test_code();
+		        		return false;
+		        	} 
+		        });
+		 	 });
+        </script>
+	<body>
+	<div id="container">
+		<div id="header">
+			<h1>
+				vagamap
+			</h1>
+		</div>
+		<div id="navigation">
+			<ul>
+				<li><a href="/provider/edit">Providers</a></li>
+				<li><a href="#">Places</a></li>
+				<li><a href="#">Map</a></li>
+			</ul>
+		</div>
+		<div id="content-container">
+			<form method="POST" action="" name="provider">
+				<div id="properties">
+					<div class="property">{{form.name.label}} {{form.name}}</div>
+				</div>
+				{% if form.name.errors %}
+        			<ul class="errors">
+        			{% for error in form.name.errors %}
+        				<li>{{ error }}</li>
+        			{% endfor %}
+        			</ul>
+    			{% endif %}
+				<table border="0" class="maintable" cellpadding="3px" cellspacing="3px">
+					<tbody>
+						<tr>
+						<td width="50%" >{{form.code()}}</td>
+						<td valign="top">
+							<ul class="css-tabs">
+								<li><a href="#">Output</a></li>
+								<li><a href="#">Input</a></li>
+							</ul>
+							<div class="css-panes">
+								<div><textarea id="output" readonly="readonly" ></textarea></div>
+								<div>{{form.test_input}}</textarea></div>
+								<div>pane 3 content</div>
+							</div>
+							
+						</td>
+						</tr>
+				</table>
+				<div id="footer">
+					<input type="submit" value="Save" /> 
+					<input type="button" onclick="test_code()" value="Test" />
+				</div>
+			</form>
+		</div>
+		
+	</div>
+	</body>
+</html>
