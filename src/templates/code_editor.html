@@ -1,0 +1,47 @@
+<html>
+	<head><title>Test</title></head>
+        <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+        <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
+        <script language="javascript" type="text/javascript">
+        editAreaLoader.init({
+            id : "code"		// textarea id
+            ,syntax: "python"			// syntax to be uses for highgliting
+            ,start_highlight: true		// to display with highlight mode on start-up
+        });
+        </script>
+	<body>
+	<div id="container">
+		<div id="header">
+			<h1>
+				vagamap
+			</h1>
+		</div>
+		<div id="navigation">
+			<ul>
+				<li><a href="#">Home</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Services</a></li>
+				<li><a href="#">Contact us</a></li>
+			</ul>
+		</div>
+		<div id="content-container">
+			<form method="POST" action="/">
+				<table border="0" class="maintable" cellpadding="3px" cellspacing="3px">
+					<tbody>
+						<tr>
+						<td width="50%">{{form.code()}}</td>
+						<td valign="top">
+							<textarea id="output" readonly="readonly" >{{ output }}</textarea>
+						</td>
+						</tr>
+				</table>
+				<div id="footer">
+					<input type="submit" value="Execute" /> Save Revert
+				</div>
+			</form>
+		</div>
+		
+	</div>
+	</body>
+</html>

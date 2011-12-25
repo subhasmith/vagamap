@@ -33,7 +33,7 @@ class TestPage(webapp2.RequestHandler):
             'output':output
         }
 
-        template = jinja_environment.get_template('test.html')
+        template = jinja_environment.get_template('templates/code_editor.html')
         self.response.out.write(template.render(template_values))
         
 
