@@ -3,6 +3,7 @@ import wtforms
 import jinja2
 import new
 import base
+from wtforms.ext.appengine.db import model_form
 from vagamap.models import *
 
 jinja_environment = jinja2.Environment(
@@ -12,29 +13,36 @@ def execute(code):
     module = new.module('usercode')
     exec code in module.__dict__
     return module 
-    
-class ProviderForm(wtforms.Form):
-    code = wtforms.TextAreaField('Code',  [wtforms.validators.Required(), ] )
+
+class ProviderForm(model_form(Provider)):
+    pass
 
 class TestPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
         
-        name = self.request.get('name')
-        provider = db.Key.from_path('Employee', 'asalieri')
+        key_name = self.request.get('key_name')
+        provider = None
+        if key_name:
+            provider = db.get(db.Key.from_path('Provider', key_name))
 
-        form = ProviderForm(self.request.POST)
-        output = ''
-        if self.request.method == 'POST' and form.validate():
-            try:
-                usercode = execute(form.code.data)
-                output = usercode.test()
-            except Exception as e:
-                output = str(e)
+        if self.request.method == 'POST':
+            form = ProviderForm(self.request.POST)
+            if form.validate():
+                name = form.name.data
+                provider = Provider(key_name=name, name=name)
+                provider.code = form.code.data
+                provider.test_input = form.test_input.data
+                provider.put()
+                self.redirect("./edit?key_name={}".format(name))
+        elif provider:
+            form = ProviderForm(obj=provider)
+        else:
+            form = ProviderForm()
+            pass
             
         template_values = {
-            'form':form, 
-            'output':output
+            'form':form
         }
 
         template = jinja_environment.get_template('templates/code_editor.html')
