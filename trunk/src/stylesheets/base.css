@@ -77,7 +77,31 @@ body
 	padding: 5px 10px 0px 10px;
 }
 
+#footer input {
+	width: 100px;
+}
+
 .errors {
 	color: #f00;
 	font-size: smaller;
 }
+
+
+
+.entity-list table, th, td {
+	border: 1px solid black;
+	padding: 5px;
+}
+.entity-list thead {
+	background: #CCC;
+}
+
+
+
+
+
+
+
+
+
+

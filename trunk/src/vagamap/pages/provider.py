@@ -61,10 +61,12 @@ class ListProviderHandler(webapp2.RequestHandler):
         template_values = {
             'providers':providers
         }
+
+        template = jinja_environment.get_template('provider_list.html')
+        self.response.out.write(template.render(template_values))
         
-        
-        
-        
+    def post(self):
+        self.redirect('/provider/edit')
         
         
         
