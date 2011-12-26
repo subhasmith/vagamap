@@ -12,7 +12,10 @@ handlers:
   static_dir: scripts
 
 - url: /provider/edit
-  script: vagamap.pages.provider.editor
+  script: vagamap.pages.provider.edit
+  
+- url: /provider/list
+  script: vagamap.pagees.provider.list
   
 - url: /handlers/testcode
   script: vagamap.handlers.testcode.handler
