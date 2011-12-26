@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}List Providers{% endblock %}
+{% block head %}
+   	<script language="javascript" type="text/javascript">
+	</script>
+	<style type="text/css">
+	</style>
+{% endblock %}
+{% block form_open %}<form method="POST" action="" name="provider_list">{% endblock %}
+{% block content %}
+	<table class="entity-list" >
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td style="width: 120px">Last Updated</td>
+				<td style="width: 120px">Last Run</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for provider in providers %}
+			<tr>
+				<td><a href="/provider/edit?key_name={{ provider.name }}" >{{ provider.name }}</a></td>
+				<td>{{ provider.last_updated|datetime }}</td>
+				<td>{{ provider.last_invoked|datetime }}</td>
+			<tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+{% block footer %}
+	<input type="submit" value="New" /> 
+{% endblock %}
+{% block form_close %}</form>{% endblock %}

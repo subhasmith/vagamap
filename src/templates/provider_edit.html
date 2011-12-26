@@ -44,6 +44,8 @@
 		    });
 		});
 	</script>
+	
+	<link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
 	<style type="text/css">
 		#left-column {
 			float: left;
@@ -104,7 +106,8 @@
 	</div>
 {% endblock %}
 {% block footer %}
-	<input type="submit" value="Save" /> 
 	<input type="button" onclick="test_code()" value="Test" />
+	<input type="submit" value="Save" />
+	<input type="button" onclick="window.location.href='/provider/list'" value="List" /> 
 {% endblock %}
 {% block form_close %}</form>{% endblock %}

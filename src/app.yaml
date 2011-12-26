@@ -15,7 +15,7 @@ handlers:
   script: vagamap.pages.provider.edit
   
 - url: /provider/list
-  script: vagamap.pagees.provider.list
+  script: vagamap.pages.provider.list
   
 - url: /handlers/testcode
   script: vagamap.handlers.testcode.handler
