@@ -1,99 +1,110 @@
-<html>
-	<head><title>Test</title></head>
-        <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
-        <link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
-        <script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
-        <script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
-        <script language="javascript" type="text/javascript">
-			function test_code() {
-        		code = editAreaLoader.getValue('code');
-        		input = $('#test_input').val();
-        		$.ajax({
-        		  type: 'POST',
-				  url: "/handlers/testcode",
-				  context: document.body,
-				  data: { 'code': code,
-				  		  'input': input },
-				  success: function(output) {
-				    $('#output').val(output);
-				    $("ul.css-tabs > li > a").first().click();
-				  }
-				});
-        	}
-        	
-        	function save() {
-        		$("input[value='Save']").click();
-        	}
-        
-        	$(document).ready(function(){
-        		$('#code').disabled = true;
-		        editAreaLoader.init({
-		            id : "code"		// textarea id
-		            ,syntax: "python"			// syntax to be uses for highgliting
-		            ,start_highlight: true		// to display with highlight mode on start-up
-		       		,plugins: "testcode"
-		       		,allow_toggle: false
-		        });
-		        $(".css-tabs").tabs(".css-panes > div");
-		        $('#test_input').keypress(function(event) { 
-		        	if (event.which == 13 && event.shiftKey) {
-		        		test_code();
-		        		return false;
-		        	} 
-		        });
-		 	 });
-        </script>
-	<body>
-	<div id="container">
-		<div id="header">
-			<h1>
-				vagamap
-			</h1>
-		</div>
-		<div id="navigation">
-			<ul>
-				<li><a href="/provider/edit">Providers</a></li>
-				<li><a href="#">Places</a></li>
-				<li><a href="#">Map</a></li>
-			</ul>
-		</div>
-		<div id="content-container">
-			<form method="POST" action="" name="provider">
-				<div id="properties">
-					<div class="property">{{form.name.label}} {{form.name}}</div>
-				</div>
-				{% if form.name.errors %}
-        			<ul class="errors">
-        			{% for error in form.name.errors %}
-        				<li>{{ error }}</li>
-        			{% endfor %}
-        			</ul>
-    			{% endif %}
-				<table border="0" class="maintable" cellpadding="3px" cellspacing="3px">
-					<tbody>
-						<tr>
-						<td width="50%" >{{form.code()}}</td>
-						<td valign="top">
-							<ul class="css-tabs">
-								<li><a href="#">Output</a></li>
-								<li><a href="#">Input</a></li>
-							</ul>
-							<div class="css-panes">
-								<div><textarea id="output" readonly="readonly" ></textarea></div>
-								<div>{{form.test_input}}</textarea></div>
-								<div>pane 3 content</div>
-							</div>
-							
-						</td>
-						</tr>
-				</table>
-				<div id="footer">
-					<input type="submit" value="Save" /> 
-					<input type="button" onclick="test_code()" value="Test" />
-				</div>
-			</form>
-		</div>
+{% extends "base.html" %}
+{% block title %}Edit Provider{% endblock %}
+{% block head %}
+	<script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
+   	<script language="javascript" type="text/javascript">
+		function test_code() {
+		    code = editAreaLoader.getValue('code');
+		    input = $('#test_input').val();
+		    $.ajax({
+		        type: 'POST',
+		        url: "/handlers/testcode",
+		        context: document.body,
+		        data: {
+		            'code': code,
+		            'input': input
+		        },
+		        success: function (output) {
+		            $('#output').val(output);
+		            $("ul.css-tabs > li > a").first().click();
+		        }
+		    });
+		}
 		
+		function save() {
+		    $("input[value='Save']").click();
+		}
+		
+		$(document).ready(function () {
+		    $('#code').disabled = true;
+		    editAreaLoader.init({
+		        id: "code",
+		        syntax: "python",
+		        start_highlight: true,
+		        plugins: "testcode",
+		        allow_toggle: false,
+		        min_width: 380
+		    });
+		    $(".css-tabs").tabs(".css-panes > textarea");
+		    $('#test_input').keypress(function (event) {
+		        if (event.which == 13 && event.shiftKey) {
+		            test_code();
+		            return false;
+		        }
+		    });
+		});
+	</script>
+	<style type="text/css">
+		#left-column {
+			float: left;
+			width: 380px;
+			padding: 5px 10px 5px 0px;
+		}
+		
+		#right-column {
+			float: right;
+			width: 380px;
+			padding: 5px 0px 5px 10px;
+		}
+		
+		textarea {
+			float: left;
+			resize: none;
+			height: 330px;
+			padding: 0;
+			margin: 0;
+			width: 380px;
+		}
+		
+		.css-panes textarea {
+			height: 280px;
+			border: 1px solid #666;
+			border-width: 0 1px 1px 1px;
+			min-height: 150px;
+			padding: 10px;
+			width: 360px;
+			margin-top: 0px;
+		}	
+	</style>
+{% endblock %}
+{% block form_open %}<form method="POST" action="" name="provider">{% endblock %}
+{% block content %}
+	<div id="properties">
+		<div class="property">{{form.name.label}} {{form.name}}</div>
 	</div>
-	</body>
-</html>
+	{% if form.name.errors %}
+		<ul class="errors">
+		{% for error in form.name.errors %}
+			<li class="error" >{{ error }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	<div id="left-column" >
+	{{form.code()}}
+	</div>
+	<div id="right-column" >
+		<ul class="css-tabs">
+		<li><a href="#">Output</a></li>
+		<li><a href="#">Input</a></li>
+	</ul>
+	<div class="css-panes">
+		<textarea id="output" readonly="readonly" ></textarea>
+		{{form.test_input}}
+	</div>
+	</div>
+{% endblock %}
+{% block footer %}
+	<input type="submit" value="Save" /> 
+	<input type="button" onclick="test_code()" value="Test" />
+{% endblock %}
+{% block form_close %}</form>{% endblock %}

@@ -6,8 +6,7 @@ import base
 from wtforms.ext.appengine.db import model_form
 from vagamap.models import *
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(base.folder))
+jinja_environment = base.jinja_environment
 
 def execute(code):
     module = new.module('usercode')
@@ -17,7 +16,7 @@ def execute(code):
 class ProviderForm(model_form(Provider)):
     pass
 
-class TestPage(webapp2.RequestHandler):
+class EditProviderHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
         
@@ -45,12 +44,37 @@ class TestPage(webapp2.RequestHandler):
             'form':form
         }
 
-        template = jinja_environment.get_template('templates/code_editor.html')
+        template = jinja_environment.get_template('provider_edit.html')
         self.response.out.write(template.render(template_values))
         
-
     def post(self):
         self.get()
 
+class ListProviderHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+        
+        query = Provider.all()
+        query.order = "name"
+        providers = query.fetch(limit=50)
+        
+        template_values = {
+            'providers':providers
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-editor = webapp2.WSGIApplication([('/provider/edit', TestPage)], debug=True)
+edit = webapp2.WSGIApplication([('/provider/edit', EditProviderHandler)], debug=True)
+list = webapp2.WSGIApplication([('/provider/list', ListProviderHandler)], debug=True)

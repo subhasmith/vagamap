@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vagamap - {% block title %}{% endblock %}</title>
+		<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css" />
+		<link type="text/css" rel="stylesheet" href="/stylesheets/base.css" />
+        <link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
+        <script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
+        {% block head %}{% endblock %}
+	</head>
+	<body>
+	<div id="container">
+		<div id="header">
+			<h1>
+				vagamap
+			</h1>
+		</div>
+		<div id="navigation">
+			<ul>
+				<li><a href="/provider/edit">Providers</a></li>
+				<li><a href="#">Places</a></li>
+				<li><a href="#">Map</a></li>
+			</ul>
+		</div>
+		{% block form_open %}{% endblock %}
+		<div id="content-container">
+			{% block content %}{% endblock %}
+		</div>
+		<div id="footer">
+			{% block footer %}{% endblock %}
+		</div>
+		{% block form_close %}{% endblock %}
+	</div>
+	</body>
+</html>
