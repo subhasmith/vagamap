@@ -9,11 +9,6 @@ import logging
 
 jinja_environment = base.jinja_environment
 
-def execute(code):
-    module = new.module('usercode')
-    exec code in module.__dict__
-    return module 
-
 class ProviderForm(model_form(Provider)):
     pass
 
@@ -83,5 +78,5 @@ class ListProviderHandler(webapp2.RequestHandler):
         
         
 
-edit = webapp2.WSGIApplication([('/provider/edit', EditProviderHandler)], debug=True)
-list = webapp2.WSGIApplication([('/provider/list', ListProviderHandler)], debug=True)
+provider_edit = webapp2.WSGIApplication([('/provider/edit', EditProviderHandler)], debug=True)
+provider_list = webapp2.WSGIApplication([('/provider/list', ListProviderHandler)], debug=True)

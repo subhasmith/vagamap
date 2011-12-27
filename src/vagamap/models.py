@@ -58,14 +58,26 @@ class Provider(db.Model):
             traceback.print_exc(file=out)
         finally:
             sys.stdout = old_stdout
+        self.last_run = datetime.datetime.now()
         self.last_output = str(out.getvalue())
         self.put()
     
 class Place(db.Model):
     name = db.StringProperty(required=True)
     provider = db.StringProperty()
+    label = db.StringProperty()
     coordinates = db.GeoPtProperty()
     description = db.TextProperty()
     images = db.StringListProperty()
     modified_properties = db.StringListProperty()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
