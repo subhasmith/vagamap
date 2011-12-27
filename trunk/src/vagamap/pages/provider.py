@@ -33,7 +33,10 @@ class EditProviderHandler(webapp2.RequestHandler):
                 provider = Provider(key_name=name, name=name)
                 provider.code = form.code.data
                 provider.test_input = form.test_input.data
-                provider.put()
+                if self.request.get("run"):
+                    provider.run()
+                else:
+                    provider.put()
                 self.redirect("./edit?key_name={}".format(name))
                 
         elif provider:
