@@ -11,16 +11,17 @@
 	<table class="entity-list" >
 		<thead>
 			<tr>
-				<td style="width: 100px" ">Provider</td>
+				<td style="width: 100px" >Provider</td>
 				<td style="width: 100px" >Name</td>
-
+				<td style="width: 300px" >Label</td>
 			</tr>
 		</thead>
 		<tbody>
 		{% for place in places %}
 			<tr>
-				<td>{{ place.provider }}</a>
+				<td><a href="/provider/edit?key_name={{ place.provider }}" >{{ place.provider }}</a></td>
 				<td><a href="/place/edit?key_name={{ place.name }}" >{{ place.name }}</a></td>
+				<td>{{ place.label }}</td>
 			<tr>
 		{% endfor %}
 		</tbody>

@@ -14,6 +14,7 @@ class Provider(db.Model):
     last_load_count = db.IntegerProperty(default=0)
     last_output = db.TextProperty()
     exception = db.BooleanProperty(default=False)
+    enabled = db.BooleanProperty(default=True)
     
     def run(self):
         self.last_invoked = datetime.datetime.now()
@@ -29,24 +30,12 @@ class Provider(db.Model):
                 places = usercode.run()
                 for place in places:
                     place.provider = self.name
-                    
-                    query = Place.all()
-                    query.filter("provider =", place.provider)
-                    query.filter("name =", place.name)
-                    existing = query.get()
-                    
+                    existing = Place.fetch(place.provider, place.name)
                     if existing:
                         print ">> updating: '{}'".format(place.name)
-                        ignore =  ['name', 'provider', 'modified_properties'] + existing.modified_properties
-                        changed = False
-                        for key in place.properties():
-                            if key in ignore: continue
-                            if not getattr(existing, key) == getattr(place, key):
-                                setattr(existing, key, getattr(place, key))
-                                print '    .{}'.format(key)
-                                changed = True
-                        if changed:
-                            existing.put()
+                        changed_fields = existing.update(place)
+                        for changed_field in changed_fields:
+                            print '    .{}'.format(changed_field)
                     else:
                         print ">> creating: '{}'".format(place.name)
                         place.put()
@@ -55,6 +44,7 @@ class Provider(db.Model):
                 raise Exception("No run() function in provider code.")
         except:
             self.exception = True
+            self.enabled = False
             traceback.print_exc(file=out)
         finally:
             sys.stdout = old_stdout
@@ -71,9 +61,24 @@ class Place(db.Model):
     images = db.StringListProperty()
     modified_properties = db.StringListProperty()
     
+    def update(self, other):
+        ignore =  ['name', 'provider', 'modified_properties'] + self.modified_properties
+        changed = []
+        for key in other.properties():
+            if key in ignore: continue
+            if not getattr(self, key) == getattr(other, key):
+                setattr(self, key, getattr(other, key))
+                changed.append(key)
+        if changed:
+            self.put()
+        return changed
     
-    
-    
+    @staticmethod
+    def fetch(provider, name):
+        query = Place.all()
+        query.filter("provider =", provider)
+        query.filter("name =", name)
+        return query.get()
     
     
     
