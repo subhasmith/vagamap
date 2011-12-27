@@ -3,17 +3,12 @@ Created on Dec 24, 2011
 
 @author: Matt
 '''
-import new
 import webapp2
 from cStringIO import StringIO
 import sys
 import traceback
 
-def to_module(code, test_data=''):
-    module = new.module('usercode')
-    module.__dict__['test_input'] = test_data
-    exec code in module.__dict__
-    return module
+from vagamap.util import to_module
 
 class CodeTester(webapp2.RequestHandler):
     def post(self):

@@ -5,6 +5,7 @@ import new
 import base
 from wtforms.ext.appengine.db import model_form
 from vagamap.models import *
+import logging
 
 jinja_environment = base.jinja_environment
 
@@ -34,6 +35,7 @@ class EditProviderHandler(webapp2.RequestHandler):
                 provider.test_input = form.test_input.data
                 provider.put()
                 self.redirect("./edit?key_name={}".format(name))
+                
         elif provider:
             form = ProviderForm(obj=provider)
         else:

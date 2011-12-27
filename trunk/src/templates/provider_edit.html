@@ -15,7 +15,7 @@
 		            'input': input
 		        },
 		        success: function (output) {
-		            $('#output').val(output);
+		            $('#last_output').val(output);
 		            $("ul.css-tabs > li > a").first().click();
 		        }
 		    });
@@ -100,12 +100,13 @@
 		<li><a href="#">Input</a></li>
 	</ul>
 	<div class="css-panes">
-		<textarea id="output" readonly="readonly" ></textarea>
+		{{form.last_output(readonly="readonly")}}
 		{{form.test_input}}
 	</div>
 	</div>
 {% endblock %}
 {% block footer %}
+	<input type="submit" value="Run" />
 	<input type="button" onclick="test_code()" value="Test" />
 	<input type="submit" value="Save" />
 	<input type="button" onclick="window.location.href='/provider/list'" value="List" /> 
