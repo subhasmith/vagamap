@@ -11,19 +11,16 @@
 	<table class="entity-list" >
 		<thead>
 			<tr>
-				<td style="width: 100px">Name</td>
-				<td style="width: 120px">Last Updated</td>
-				<td style="width: 120px">Last Run</td>
-				<td style="width: 50px">Loaded</td>
+				<td style="width: 100px" ">Provider</td>
+				<td style="width: 100px" >Name</td>
+
 			</tr>
 		</thead>
 		<tbody>
-		{% for provider in providers %}
+		{% for place in places %}
 			<tr>
-				<td><a href="/provider/edit?key_name={{ provider.name }}" >{{ provider.name }}</a></td>
-				<td>{{ provider.last_updated|datetime }}</td>
-				<td>{{ provider.last_invoked|datetime }}</td>
-				<td>{{ provider.last_load_count }}</td>
+				<td>{{ place.provider }}</a>
+				<td><a href="/place/edit?key_name={{ place.name }}" >{{ place.name }}</a></td>
 			<tr>
 		{% endfor %}
 		</tbody>
