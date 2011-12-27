@@ -11,6 +11,7 @@
 	<table class="entity-list" >
 		<thead>
 			<tr>
+				<td></td>
 				<td style="width: 100px">Name</td>
 				<td style="width: 120px">Last Updated</td>
 				<td style="width: 120px">Last Run</td>
@@ -20,6 +21,7 @@
 		<tbody>
 		{% for provider in providers %}
 			<tr>
+				<td>{{ provider.enabled }}</td>
 				<td><a href="/provider/edit?key_name={{ provider.name }}" >{{ provider.name }}</a></td>
 				<td>{{ provider.last_updated|datetime }}</td>
 				<td>{{ provider.last_invoked|datetime }}</td>

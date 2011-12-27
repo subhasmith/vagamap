@@ -40,7 +40,7 @@
 		
 		$(document).ready(function () {
 		    $('#code').disabled = true;
-		    /*
+		    
 		    editAreaLoader.init({
 		        id: "code",
 		        syntax: "python",
@@ -49,7 +49,7 @@
 		        allow_toggle: false,
 		        min_width: 380
 		    });
-		    */
+		    
 		    $(".css-tabs").tabs(".css-panes > textarea");
 		    $('#code').keydown(keyboard_event);
 		    $('#test_input').keydown(keyboard_event);
@@ -58,34 +58,36 @@
 	
 	<link type="text/css" rel="stylesheet" href="/stylesheets/tabs.css" />
 	<style type="text/css">
-		#left-column {
+		#code-pane {
+			clear: both;
 			float: left;
-			width: 380px;
-			padding: 5px 10px 5px 0px;
+			width: 780px;
+			padding: 5px 0px 5px 0px;
 		}
 		
-		#right-column {
-			float: right;
-			width: 380px;
-			padding: 5px 0px 5px 10px;
+		#io-pane {
+			clear: both;
+			float: left;
+			width: 780px;
+			padding: 5px 0px 5px 0px;
 		}
 		
 		textarea {
 			float: left;
 			resize: none;
-			height: 330px;
-			padding: 0;
+			height: 310px;
+			padding: 10px;
 			margin: 0;
-			width: 380px;
+			width: 760px;
 		}
 		
 		.css-panes textarea {
-			height: 280px;
+			height: 180px;
 			border: 1px solid #666;
 			border-width: 0 1px 1px 1px;
 			min-height: 150px;
 			padding: 10px;
-			width: 360px;
+			width: 760px;
 			margin-top: 0px;
 		}	
 	</style>
@@ -95,18 +97,18 @@
 	<div id="properties">
 		<div class="property">{{form.name.label}} {{form.name}}</div>
 	</div>
-	<div id="left-column" >
+	<div id="io-pane" >
 		{{form.code()}}
 	</div>
-	<div id="right-column" >
+	<div id="code-pane" >
 		<ul class="css-tabs">
-		<li><a href="#">Output</a></li>
-		<li><a href="#">Input</a></li>
-	</ul>
-	<div class="css-panes">
-		{{form.last_output(readonly="readonly")}}
-		{{form.test_input}}
-	</div>
+			<li><a href="#">Output</a></li>
+			<li><a href="#">Input</a></li>
+		</ul>
+		<div class="css-panes">
+			{{form.last_output(readonly="readonly")}}
+			{{form.test_input}}
+		</div>
 	</div>
 {% endblock %}
 {% block footer %}
