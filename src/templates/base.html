@@ -25,7 +25,18 @@
 		<div id="content-container">
 			{% block content %}{% endblock %}
 		</div>
-		<div id="footer">
+		{% if form and form.errors %}
+		<div id="errors" class="footer" >
+		    <ul class="errors">
+	        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+	            {% for error in field_errors %}
+	                <li>{{ form[field_name].label }}: {{ error }}</li>
+	            {% endfor %}
+	        {% endfor %}
+	    	</ul>
+		</div>
+		{% endif %}
+		<div id="commands" class="footer" >
 			{% block footer %}{% endblock %}
 		</div>
 		{% block form_close %}{% endblock %}

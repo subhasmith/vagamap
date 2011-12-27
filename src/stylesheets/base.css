@@ -65,7 +65,7 @@ body
 	background: #FFF;
 }
 
-#footer {
+.footer {
 	float: left;
 	clear: both;
 	border-style: solid;
@@ -74,12 +74,21 @@ body
 	background: #fff;
 	margin: 0px;
 	width: 780px;
-	height: 30px;
 	padding: 5px 10px 0px 10px;
 }
 
-#footer input {
+#commands {
+	height: 30px;
+}
+
+#commands input {
 	width: 100px;
+}
+
+#errors {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background: #fff4f4;
 }
 
 .errors {

@@ -2,6 +2,7 @@
 {% block title %}Edit Provider{% endblock %}
 {% block head %}
 	<script language="javascript" type="text/javascript" src="/scripts/edit_area/edit_area_full.js"></script>
+	<script language="javascript" type="text/javascript" src="/scripts/tabs.js"></script>
    	<script language="javascript" type="text/javascript">
 		function test_code() {
 		    code = editAreaLoader.getValue('code');
@@ -25,8 +26,21 @@
 		    $("input[value='Save']").click();
 		}
 		
+		function keyboard_event(event) {
+			checkTab(event);
+	        if (event.which == 13 && event.shiftKey) {
+	            test_code();
+	            event.preventDefault();
+	        }
+	        if (event.which == 115 && event.ctrlKey) {
+	        	save();
+	        	event.preventDefault();
+	        }
+		}
+		
 		$(document).ready(function () {
 		    $('#code').disabled = true;
+		    /*
 		    editAreaLoader.init({
 		        id: "code",
 		        syntax: "python",
@@ -35,13 +49,10 @@
 		        allow_toggle: false,
 		        min_width: 380
 		    });
+		    */
 		    $(".css-tabs").tabs(".css-panes > textarea");
-		    $('#test_input').keypress(function (event) {
-		        if (event.which == 13 && event.shiftKey) {
-		            test_code();
-		            return false;
-		        }
-		    });
+		    $('#code').keydown(keyboard_event);
+		    $('#test_input').keydown(keyboard_event);
 		});
 	</script>
 	
@@ -84,15 +95,8 @@
 	<div id="properties">
 		<div class="property">{{form.name.label}} {{form.name}}</div>
 	</div>
-	{% if form.name.errors %}
-		<ul class="errors">
-		{% for error in form.name.errors %}
-			<li class="error" >{{ error }}</li>
-		{% endfor %}
-		</ul>
-	{% endif %}
 	<div id="left-column" >
-	{{form.code()}}
+		{{form.code()}}
 	</div>
 	<div id="right-column" >
 		<ul class="css-tabs">
@@ -106,9 +110,9 @@
 	</div>
 {% endblock %}
 {% block footer %}
-	<input type="submit" value="Run" />
+	<input type="submit" name="run" value="Run" />
 	<input type="button" onclick="test_code()" value="Test" />
-	<input type="submit" value="Save" />
+	<input type="submit" name="save" value="Save" />
 	<input type="button" onclick="window.location.href='/provider/list'" value="List" /> 
 {% endblock %}
 {% block form_close %}</form>{% endblock %}
