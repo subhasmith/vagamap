@@ -6,6 +6,7 @@ import base
 from wtforms.ext.appengine.db import model_form
 from vagamap.models import *
 import logging
+from google.appengine.api import taskqueue
 
 jinja_environment = base.jinja_environment
 
@@ -24,14 +25,20 @@ class EditProviderHandler(webapp2.RequestHandler):
         if self.request.method == 'POST':
             form = ProviderForm(self.request.POST)
             if form.validate():
-                name = form.name.data
+                key_name = name = form.name.data
                 provider = Provider(key_name=name, name=name)
                 provider.code = form.code.data
                 provider.test_input = form.test_input.data
+                provider.put()
                 if self.request.get("run"):
-                    provider.run()
-                else:
-                    provider.put()
+                    def run_provider(key_name):
+                        provider = db.get(db.Key.from_path('Provider', key_name))
+                        provider.running = True;
+                        provider.put()
+                        taskqueue.add(url='/handlers/provider/run', transactional=True, params={'key_name':key_name})  
+                        logging.info("task added")
+                    db.run_in_transaction(run_provider, key_name)
+                    
                 self.redirect("./edit?key_name={}".format(name))
                 
         elif provider:
