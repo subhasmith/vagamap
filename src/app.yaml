@@ -23,11 +23,15 @@ handlers:
 - url: /place/list
   script: vagamap.pages.place.place_list
   
+- url: /map
+  script: vagamap.pages.map.map_app
+
 - url: /handlers/testcode
   script: vagamap.handlers.testcode.handler
 
 - url: /debug
   script: debug.handler
+
 
 libraries:
 - name: jinja2

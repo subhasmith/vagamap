@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Map{% endblock %}
+{% block head %}
+	<script language="javascript" type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDuBr9hpgebPfgH7ywd8FGPgo2UC74BHyU&sensor=false">
+	</script> 
+   	<script language="javascript" type="text/javascript" >
+   		window.alert("WHAT");
+   	
+		function initialize() {
+		   	var myLatlng = new google.maps.LatLng(-34.397, 150.644);
+		   	var myOptions = {
+		   	  zoom: 8,
+		   	  center: myLatlng,
+		   	  mapTypeId: google.maps.MapTypeId.ROADMAP
+		   	};
+			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			return map;
+		}
+   	
+   		$(document).ready(function () {
+			map = initialize();
+		});
+	</script>
+	<style type="text/css">
+		#map_canvas {
+			width: 780px;
+			height: 400px;
+		}
+	</style>
+{% endblock %}
+{% block form_open %}<form method="POST" action="" name="map_form">{% endblock %}
+{% block content %}
+	<div id="map_canvas"></div>
+{% endblock %}
+{% block footer %}
+	<input type="submit" value="Go" /> 
+{% endblock %}
+{% block form_close %}</form>{% endblock %}
