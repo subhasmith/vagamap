@@ -13,6 +13,7 @@ handlers:
   
 - url: /provider/edit
   script: vagamap.pages.provider.provider_edit
+  login: admin
   
 - url: /provider/list
   script: vagamap.pages.provider.provider_list
@@ -25,6 +26,9 @@ handlers:
   
 - url: /map
   script: vagamap.pages.map.map_app
+  
+- url: /countries
+  script: vagamap.pages.countries.countries_app
 
 - url: /handlers/testcode
   script: vagamap.handlers.testcode.handler
