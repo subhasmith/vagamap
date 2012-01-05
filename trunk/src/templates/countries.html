@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Map{% endblock %}
+{% block head %}
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+   	<script language="javascript" type="text/javascript" >
+   		google.load('visualization', '1', {'packages': ['geomap']});
+		google.setOnLoadCallback(queryData);
+		var data;
+		var view;
+		var options;
+		var geomap;
+		
+		function queryData() {
+			var query = new google.visualization.Query(
+				'https://docs.google.com/a/zoil.org/spreadsheet/tq?range=A1%3AK232&key=0AjcUe2o3XnTddGJSRkVsOWMxVVMyY2VPV2l5RTNtd0E&sheet=diseases&headers=1');
+			query.send(handleQueryResponse);
+		}
+		
+		function handleQueryResponse(response) {
+			if (response.isError()) {
+				alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+				return;
+			}
+			data = response.getDataTable();
+			view = new google.visualization.DataView(data);
+			drawMap(3);
+		}
+		
+		function drawMap(column) {
+			options = {};
+			options['dataMode'] = 'regions';
+			options['width'] = '790px'
+			options['height'] = '400px'
+			options['colors'] = [0xDDFFDD, 0xFF8080];
+			
+			setColumn(column);
+			
+			var container = document.getElementById('map_canvas');
+			geomap = new google.visualization.GeoMap(container);
+			geomap.draw(view, options);
+			google.visualization.events.addListener(geomap, 'regionClick', onMapClicked);
+		}
+		
+		function setColumn(column) {
+			view.setColumns([0,column,1]);
+			if (geomap) {
+				geomap.draw(view, options);
+			}
+		}
+		
+		function onMapClicked(e) {
+			cc = e.region;
+			rows = data.getFilteredRows([{column: 0, value: cc}]);			
+			if (rows.length > 0) {
+				href = data.getValue(rows[0], 2);
+				window.open(href + '#vaccines', '_blank');
+			}
+		}
+		
+		function selectionChanged(value) {
+			if (value == 99) {
+				window.open('http://cdc-malaria.ncsa.uiuc.edu/', '_blank');
+			} else {
+				setColumn(value);	
+			}
+		}
+   	</script>
+	<style type="text/css">
+		#map_canvas {
+			width: 790px;
+			height: 400px;
+		}
+	</style>
+{% endblock %}
+{% block form_open %}<form method="POST" action="" name="map_form">{% endblock %}
+{% block content %}
+	<div id="map_canvas"></div>
+{% endblock %}
+{% block footer %}
+	<select onchange="selectionChanged(parseInt(this.value))">
+		<option value="3">Hepatitis A or immune globulin (IG)</option>
+		<option value="4">Hepatitis B</option>
+		<option value="5">Japanese encephalitis</option>
+		<option value="6">Meningococcal (meningitis)</option>
+		<option value="7">Polio</option>
+		<option value="8">Rabies</option>
+		<option value="9">Typhoid</option>
+		<option value="10">Yellow Fever</option>
+		<option value="99">Malaria</option>
+	</select>
+{% endblock %}
+{% block form_close %}</form>{% endblock %}
