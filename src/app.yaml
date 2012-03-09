@@ -35,7 +35,15 @@ handlers:
 
 - url: /debug
   script: debug.handler
+  
+- url: /handlers/misc/blogmap
+  script: vagamap.handlers.blogmap.handler
+  
+- url: /handlers/misc/blogbackground
+  script: vagamap.handlers.blogbackground.handler
 
+- url: /handlers/misc/blogkml
+  script: vagamap.handlers.blogkml.handler
 
 libraries:
 - name: jinja2
@@ -43,6 +51,9 @@ libraries:
   
 - name: lxml
   version: latest
+  
+- name: PIL
+  version: "1.1.7"
 
 builtins:
 - deferred: on
