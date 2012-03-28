@@ -2,6 +2,8 @@ import webapp2
 from google.appengine.api import urlfetch
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
+import logging
+from google.appengine.api import memcache
 
 class BlogMap(webapp2.RequestHandler):
     def get(self):
@@ -19,6 +21,17 @@ class BlogMap(webapp2.RequestHandler):
         if not points: return
         latitude, longitude = points[0].text.split()
         
+        args = (centered, zoom, maptype, length, latitude, longitude)
+        memkey = "blogmap(" + ",".join(args) + ")"
+        cached_image = memcache.get(memkey)
+        if cached_image is not None:
+            logging.debug("got cached blog map image")
+            self.response.headers['Content-Type'] = "image/png"
+            self.response.out.write(cached_image)
+            return
+        
+        
+        
         route = []
         if length:
             length = int(length)
@@ -30,10 +43,6 @@ class BlogMap(webapp2.RequestHandler):
             
         path = str("color:red|weight:5|" + '|'.join(route))
         markers = 'color:red|{},{}'.format(latitude, longitude)
-        
-        #map_url="""http://maps.googleapis.com/maps/api/staticmap?center={}""".format(latitude + "," + longitude)
-        #map_url += "&zoom=5&size=280x280&sensor=false"
-        #self.redirect(map_url)
         
         params = {
                   'size':'265x265',
@@ -57,6 +66,9 @@ class BlogMap(webapp2.RequestHandler):
         map_url = r"http://maps.googleapis.com/maps/api/staticmap?" + urllib.urlencode(params)
         #self.redirect(map_url)
         map_data = urlfetch.fetch(map_url)
+        
+        memcache.add(memkey, map_data.content, 300)
+        
         self.response.headers['Content-Type'] = "image/png"
         self.response.out.write(map_data.content)
                 
