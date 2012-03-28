@@ -56,17 +56,18 @@ class BlogKml(webapp2.RequestHandler):
             points = entry('georss:point')
             if not points: continue
             latitude, longitude = entry('georss:point')[0].text.split()
-            #thumbnails = entry('media:thumbnail')
-            #thumbnail = thumbnails[0]['url'] if thumbnails else None
+            thumbnails = entry('media:thumbnail')
+            thumbnail = thumbnails[0]['url'] if thumbnails else None
             published = entry('published')[0].text
             published = datetime.datetime.strptime(published[:19], '%Y-%m-%dT%H:%M:%S')
         
             coordinate = Coordinate(latitude, longitude)
             style = current_style if first else waypoint_style
             first = False
-            content = "<p>" + datetime.datetime.now().strftime("%A, %B %d, %Y %I:%M %p") + "</p>" + \
-                    "<br /><p>" + content + "</p><br />" + \
-                    '<p><a href="{}" >View Full Blog Entry</a></p>'.format(href)
+            content = "<p>" + datetime.datetime.now().strftime("%A, %B %d, %Y %I:%M %p") + "</p>"
+            if thumbnail:
+                content += '<p><img src="{}" /></p>'.format(thumbnail)
+            content += '<p><a href="{}" >View Blog Entry</a></p>'.format(href)
             pub_key = published.strftime("%Y/%m")
             pub_count = pub_months[pub_key]
             pub_yr_key = published.strftime("%Y")

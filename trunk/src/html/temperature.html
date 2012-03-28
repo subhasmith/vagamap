@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDuBr9hpgebPfgH7ywd8FGPgo2UC74BHyU&sensor=false">
+    </script>
+    <link type="text/css" href="css/redmond/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+    <script type="text/javascript">
+      var map;
+      var infowindows = [];
+    
+      function get_weather(at, date, callback) {
+    	  feature = "history_" + get_date();
+    	  query = "" + at.lat() + "," + at.lng()
+    	  url = "http://api.wunderground.com/api/02b4416c58d6e9c9/" + feature + "/q/" + query + ".json"
+    	  console.log(url);
+    	  $.ajax({
+    		url: url,
+    		crossdomain: true,
+    		dataType: 'jsonP',
+    		success: function(data) {
+    			if (data.history == undefined || data.history.dailysummary.length == 0) {
+    				callback(null);
+    			}
+    			callback(data.history.dailysummary[0])
+    		},
+    		error: function(jqXHR, textStatus, errorThrown) {
+    			alert(textStatus);
+    		}
+    	  })
+      }
+      
+      function weather_to_html(data) {
+    	  html = "<p><strong>" + data.date.pretty + "</strong></p>";
+    	  html += "<p>"
+    	  html += "temperature: " + data.mintempi + " to " + data.maxtempi
+    	  html += "</p>"
+    	  return html;
+      }
+      
+      function get_date() {
+    	  return $.datepicker.formatDate('yymmdd', $("#datepicker").datepicker("getDate"));
+      }
+      
+      function is_high() {
+    	  return ($('#high_low').html() == "HIGH");
+      }
+      
+      function config_datepicker() {
+    	  $( '#datepicker' ).datepicker({
+    		  dateFormat:'yymmdd'
+    		  });
+    	  
+    	  $( '#high_low' ).click( function(event) {
+    		  if ($(this).html() == 'HIGH') {
+    			  $(this).html('LOW');
+    			  $(this).css('color', '#0000FF');
+    		  } else {
+    			  $(this).html('HIGH');
+    			  $(this).css('color', '#FF0000');
+    		  }
+    	  });
+      }
+      
+      function add_date_control() {
+		var controlDiv = document.createElement('DIV');
+		
+		// Set CSS styles for the DIV containing the control
+		// Setting padding to 5 px will offset the control
+		// from the edge of the map.
+		controlDiv.style.padding = '5px';
+		
+		// Set CSS for the control border.
+		var controlUI = document.createElement('DIV');
+		controlUI.style.backgroundColor = 'white';
+		controlUI.style.borderStyle = 'solid';
+		controlUI.style.borderWidth = '2px';
+		controlUI.style.cursor = 'pointer';
+		controlUI.style.textAlign = 'center';
+		controlDiv.appendChild(controlUI);
+		
+		// Set CSS for the control interior.
+		var controlText = document.createElement('div');
+		
+ 		controlText.type = "text";
+ 		controlText.id = "datepicker";
+ 		controlText.value = "06/01/2011"oup
+ 		controlText.style.fontFamily = 'Arial,sans-serif';
+ 		controlText.style.fontSize = '50.0%';
+ 		controlText.style.paddingLeft = '4px';
+ 		controlText.style.paddingRight = '4px';
+		controlUI.appendChild(controlText);
+		
+		map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
+		setTimeout("config_datepicker();", 2000);
+      }
+      
+      function add_toggle_control() {
+    	var controlDiv = document.createElement('DIV');
+    	controlDiv.style.padding = '5px';
+  		
+  		// Set CSS for the control border.
+  		var controlUI = document.createElement('DIV');
+  		controlUI.style.backgroundColor = 'white';
+  		controlUI.style.borderStyle = 'solid';
+  		controlUI.style.borderWidth = '2px';
+  		controlUI.style.cursor = 'pointer';
+  		controlUI.style.textAlign = 'center';
+  		controlUI.title = 'Click to set the map to Home';
+  		controlDiv.appendChild(controlUI);
+  		
+  		// Set CSS for the control interior.
+  		var controlText = document.createElement('div');
+
+   		controlText.id = "high_low";
+   		controlText.innerHTML = "HIGH"
+   		controlText.style.fontFamily = 'Arial,sans-serif';
+   		//controlText.style.fontSize = '50.0%';
+   		controlText.style.paddingLeft = '4px';
+   		controlText.style.paddingRight = '4px';
+   		controlText.style.color = "#FF0000"
+   		controlText.style.width = '50px';
+  		controlUI.appendChild(controlText);
+  		
+  		map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlDiv);
+      }
+      
+      function on_map_clicked(event) {
+    	  weather = get_weather(event.latLng, null, function(data) {
+    		  var marker = new google.maps.Marker({
+    			  position: event.latLng,
+    			  map: map,
+    			  title:"Weather Report"
+    		  });
+    		  if (data == null) {
+    		  	marker.setIcon("http://google-maps-icons.googlecode.com/files/blackblank.png");
+    		  	return;
+    		  }
+    		  html = weather_to_html(data);
+    		  if (is_high()) {
+    		  	icon_num = data.maxtempi;
+    		  	icon_color = "red";
+    		  } else {
+    			icon_num = data.mintempi;
+    			icon_color = "black";
+    		  }
+    		  if (icon_num.length > 2) {
+    			  icon_num = "100";
+    		  }
+    		  icon_url = "http://google-maps-icons.googlecode.com/files/" + icon_color + icon_num + ".png";
+    		  marker.setIcon(icon_url);
+    		  
+    		  var infowindow = new google.maps.InfoWindow({
+    			  content: html
+    		  });
+    		  google.maps.event.addListener(marker, "click", function () {
+    			  for (var i = 0; i < infowindows.length; i++) {
+        			  infowindows[i].close();
+        		  }
+        		  infowindows = [];
+    			  infowindows.push(infowindow);
+    			  infowindow.open(map, marker);
+    		  });
+    	  });
+      }
+    
+    
+      function initialize() {
+        var myOptions = {
+          center: new google.maps.LatLng(0, 0),
+          zoom: 2,
+          //panControl: false,
+          draggableCursor:'crosshair',
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"),
+            myOptions);
+        google.maps.event.addListener(map, 'click', on_map_clicked)
+        add_date_control();
+        add_toggle_control();
+      }
+    </script>
+  </head>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>
