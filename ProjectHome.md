@@ -1,0 +1,1 @@
+Project is open-ended, and currently for personal use. I might make it public if it works well. I'm writing it in python 2.7/GAE. The goal is to create a set of tools which will build an interactive travel map based on information pulled from a variety of data sources (ex: UNESCO world heritage sites)
